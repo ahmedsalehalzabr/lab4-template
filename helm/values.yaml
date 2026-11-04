@@ -1,0 +1,66 @@
+services:
+  gateway:
+    enabled: true
+    image:
+      repository: ahmedsalehalzabr/lab2-gateway
+      tag: v1.0
+      pullPolicy: IfNotPresent
+    port: 8080
+    replicas: 1
+    env: []
+
+  user-service:
+    enabled: true
+    image:
+      repository: ahmedsalehalzabr/lab2-user-service
+      tag: v1.0
+      pullPolicy: IfNotPresent
+    port: 8050
+    replicas: 1
+    env:
+      - name: ASPNETCORE_URLS
+        value: "http://+:8050"
+
+  order-service:
+    enabled: true
+    image:
+      repository: ahmedsalehalzabr/lab2-order-service
+      tag: v1.0
+      pullPolicy: IfNotPresent
+    port: 8060
+    replicas: 1
+    env:
+      - name: ASPNETCORE_URLS
+        value: "http://+:8060"
+
+  warehouse-service:
+    enabled: true
+    image:
+      repository: ahmedsalehalzabr/lab2-warehouse-service
+      tag: v1.0
+      pullPolicy: IfNotPresent
+    port: 8070
+    replicas: 1
+    env:
+      - name: ASPNETCORE_URLS
+        value: "http://+:8070"
+
+ingress:
+  enabled: true
+  className: nginx
+  host: ""
+  annotations: {}
+
+postgresql:
+  enabled: true
+  auth:
+    username: program
+    password: test
+    database: postgres
+  primary:
+    persistence:
+      enabled: false
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
