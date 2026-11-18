@@ -30,8 +30,22 @@ jobs:
       - name: Start services with Docker Compose
         run: |
           docker compose up -d --build
-          echo "Waiting for services to be ready..."
-          sleep 30
+
+      - name: Wait for services to be healthy
+        run: |
+          echo "Waiting for services to become healthy..."
+          for i in $(seq 1 60); do
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/users/manage/health | grep -q "200" && \
+               curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/orders/manage/health | grep -q "200" && \
+               curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/warehouse/manage/health | grep -q "200"; then
+              echo "All services are healthy!"
+              exit 0
+            fi
+            echo "Attempt $i/60: services not ready yet, waiting..."
+            sleep 5
+          done
+          echo "ERROR: Services did not become healthy in time"
+          exit 1
 
       - name: Install Newman
         run: npm install -g newman
