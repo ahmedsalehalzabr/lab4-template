@@ -11,7 +11,8 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 
 var app = builder.Build();
 
-app.MapHealthChecks("/manage/health");
+app.MapHealthChecks("/orders/manage/health"); // المسار الجديد
+app.MapHealthChecks("/manage/health");        // المسار القديم (احتياطي)
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())

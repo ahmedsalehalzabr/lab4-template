@@ -12,7 +12,9 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 
 var app = builder.Build();
 
-app.MapHealthChecks("/manage/health");
+// مسار الصحة - يجب أن يطابق ما يطلبه Postman
+app.MapHealthChecks("/users/manage/health");
+app.MapHealthChecks("/manage/health"); // اختياري: للتوافق مع أي طلب قديم
 app.MapControllers();
 
 // إنشاء قاعدة البيانات والجداول تلقائيًا عند بدء التشغيل (للتطوير فقط)
